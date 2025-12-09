@@ -1230,83 +1230,86 @@ TrollTab:Toggle({
     end
 })
 
-        local Players = game:GetService("Players")
-        local ReplicatedStorage = game:GetService("ReplicatedStorage")
-        local LocalPlayer = Players.LocalPlayer
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
 
-        local Remotes = ReplicatedStorage:WaitForChild("Remotes")
-        local WearRemote = Remotes:WaitForChild("Wear")
-        local ChangeCharacterBody = Remotes:WaitForChild("ChangeCharacterBody")
-        local WearShirtRemote = Remotes:WaitForChild("WearShirt")
-		local CurrentTrack
-		local SkyboxActive = false
-        local BodyId = "100839513065432"
-        local Humanoid, Animator
+local Remotes = ReplicatedStorage:WaitForChild("Remotes")
+local WearRemote = Remotes:WaitForChild("Wear")
+local ChangeCharacterBody = Remotes:WaitForChild("ChangeCharacterBody")
+local WearShirtRemote = Remotes:WaitForChild("WearShirt")
+local CurrentTrack
+local SkyboxActive = false
+local BodyId = "100839513065432"
+local Humanoid, Animator
 
-        local function SetupCharacter(char)
-            Humanoid = char:WaitForChild("Humanoid")
-            Animator = Humanoid:FindFirstChildOfClass("Animator")
-            if not Animator then
-                Animator = Instance.new("Animator", Humanoid)
-            end
-        end
+local function SetupCharacter(char)
+    Humanoid = char:WaitForChild("Humanoid")
+    Animator = Humanoid:FindFirstChildOfClass("Animator")
+    if not Animator then
+        Animator = Instance.new("Animator", Humanoid)
+    end
+end
 
-        SetupCharacter(LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait())
-        LocalPlayer.CharacterAdded:Connect(SetupCharacter)
-        local function ApplyAccessories()
-
-            local Desc = Humanoid:GetAppliedDescription()
-            for _, accessory in ipairs(Desc:GetAccessories(true)) do
-                if accessory.AssetId then
-                    pcall(function()
-                        WearRemote:InvokeServer(accessory.AssetId)
-                    end)
-                end
-            end
-        end
-		local function ApplyBody()
+SetupCharacter(LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait())
+LocalPlayer.CharacterAdded:Connect(SetupCharacter)
+local function ApplyAccessories()
+    local Desc = Humanoid:GetAppliedDescription()
+	for _, accessory in ipairs(Desc:GetAccessories(true)) do
+        if accessory.AssetId then
             pcall(function()
-                ChangeCharacterBody:InvokeServer({
-                    [1] = tonumber(BodyId),
-                    [2] = nil,
-                    [3] = nil,
-                    [4] = nil,
-                    [5] = nil,
-                    [6] = nil
-                })
+                WearRemote:InvokeServer(accessory.AssetId)
             end)
         end
+    end
+end
 
-       local function PlayAnimation()
-            local AnimId = "rbxassetid://101852027997337"
-            local newAnim = Instance.new("Animation")
-            newAnim.AnimationId = AnimId
+local function ApplyBody()
+    pcall(function()
+        ChangeCharacterBody:InvokeServer({
+            [1] = tonumber(BodyId),
+            [2] = nil,
+            [3] = nil,
+            [4] = nil,
+            [5] = nil,
+            [6] = nil
+        })
+    end)
+end
 
-            local newTrack
-            pcall(function()
-                newTrack = Animator:LoadAnimation(newAnim)
-                newTrack.Priority = Enum.AnimationPriority.Action4
-                newTrack:Play(0.1, 1, 1)
-            end)
+local function PlayAnimation()
+    local AnimId = "rbxassetid://101852027997337"
+    local newAnim = Instance.new("Animation")
+    newAnim.AnimationId = AnimId
 
-            CurrentTrack = newTrack
-        end
+    local newTrack
+    pcall(function()
+        newTrack = Animator:LoadAnimation(newAnim)
+        newTrack.Priority = Enum.AnimationPriority.Action4
+        newTrack:Play(0.1, 1, 1)
+    end)
 
-        local function StopAnimation()
-            if CurrentTrack then
-                pcall(function()
-                    CurrentTrack:Stop(0)
-                end)
-            end
-        end
+    CurrentTrack = newTrack
+end
+
+local function StopAnimation()
+    if CurrentTrack then
+        pcall(function()
+            CurrentTrack:Stop(0)
+        end)
+    end
+end
 
 TrollTab:Toggle({
-	Title = "Skybox toggle",
-    Desc = "You invade the beginning with many canoes (by Bruton)",
+	Title = "Skybox Character",
+    Desc = "Turn the sky into the image on your shirt (by Bruton)",
     Default = false,
     Callback = function(SkyboxActive)
         SkyboxActive = not SkyboxActive
         if SkyboxActive then
+            StopAnimation()
+            newNotify("​📥 ​Disabled", "Skybox character disabled")
+        else
             local id = tonumber(getgenv().SkyboxClothID or "")
             if id then
                 pcall(function()
@@ -1316,10 +1319,7 @@ TrollTab:Toggle({
             ApplyAccessories()
             ApplyBody()
             PlayAnimation()
-            newNotify("🔨 Activated", "Skybox character applied", 5)
-        else
-            StopAnimation()
-            newNotify("​📥 ​Disabled", "Skybox character disabled", 5)
+            newNotify("🔨 Activated", "Skybox character applied")
         end
     end
 })
