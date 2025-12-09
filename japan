@@ -1194,6 +1194,7 @@ TrollTab:Button({
 
 TrollTab:Section({Title = "Admin Commands", Icon = "ghost"})
 
+local LocalPlayer = game.Players.LocalPlayer
 local Humanoid = (LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()):WaitForChild("Humanoid")
 
 local AnimationTrack = Instance.new("Animation")
@@ -1214,20 +1215,19 @@ TrollTab:Toggle({
     Default = false,
     Callback = function(IsAnimationPlaying)
         if IsAnimationPlaying then
-ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer({
-    100839513065432,
-    119032106683081,
-    134162178631486,
-    112132665744785,
-    134568824619589
-})
+		ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer({
+    		100839513065432,
+    		nil,
+    		nil,
+    		nil,
+    		nil
+		})
             LoadedAnimation:Play()
         else
             LoadedAnimation:Stop()
         end
     end
 })
-
 
 local SkyboxHL
 SkyboxHL = TrollTab:Button({
