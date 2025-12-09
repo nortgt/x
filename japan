@@ -1,0 +1,1925 @@
+local Players, RunService, ReplicatedStorage, StarterGui, UIS = game:GetService("Players"), game:GetService("RunService"), game:GetService("ReplicatedStorage"), game:GetService("StarterGui"), game:GetService("UserInputService")
+local LocalPlayer = Players.LocalPlayer
+local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+local Humanoid, RootPart = Character:WaitForChild("Humanoid"), Character:WaitForChild("HumanoidRootPart")
+local RE = ReplicatedStorage:WaitForChild("RE")
+
+local WindUI = loadstring(game:HttpGet("https://github.com/nxvap/cdn/raw/db/library/WindUI/1.6.53.lua"))()
+local Window = WindUI:CreateWindow({
+    Title = "Hexagon Client 🃏",
+    Icon = "rbxassetid://103422693243379",
+    Author = "by Nova · v1.1.9",
+    Size = UDim2.fromOffset(600, 480),
+    Transparent = true,
+    Theme = "Dark",
+    Resizable = true,
+})
+
+local function newNotify(title, message, duration, icon)
+	WindUI:Notify({
+    	Title = title,
+    	Content = message,
+    	Duration = duration or 3,
+    	Icon = icon or "rbxassetid://103422693243379",
+	})
+end
+
+local function newNotification(title, message, icon, duration)
+    StarterGui:SetCore("SendNotification",{
+        Title = title,
+        Text = message,
+		Icon = icon or "",
+        Duration = duration or 5
+    })
+end
+
+newNotify("Welcome to Hexagon Client", "Created by @Roun95", 10, Players:GetUserThumbnailAsync(Players:GetUserIdFromNameAsync("Roun95"), Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size100x100))
+
+local InfoTab = Window:Tab({
+    Title = "Info",
+    Icon = "info",
+    Locked = false,
+})
+local PlayerTab = Window:Tab({
+    Title = "Player",
+    Icon = "user",
+    Locked = false,
+})
+local AvatarTab = Window:Tab({
+    Title = "Avatar",
+    Icon = "tag",
+    Locked = false,
+})
+local ProfileTab = Window:Tab({
+    Title = "Profile",
+    Icon = "pencil",
+    Locked = false,
+})
+local MusicTab = Window:Tab({
+    Title = "Music",
+    Icon = "music",
+    Locked = false,
+})
+local TrollTab = Window:Tab({
+    Title = "Troll",
+    Icon = "ghost",
+    Locked = false,
+})
+local ScriptsTab = Window:Tab({
+    Title = "Scripts",
+    Icon = "scroll",
+    Locked = false,
+})
+local PremiumTab = Window:Tab({
+    Title = "Premium",
+    Icon = "sparkles",
+    Locked = false,
+})
+local TeleportTab = Window:Tab({
+    Title = "Teleport",
+    Icon = "pin",
+    Locked = false,
+})
+local ProtectionTab = Window:Tab({
+    Title = "Protection",
+    Icon = "shield",
+    Locked = false,
+})
+local AdminTab = Window:Tab({
+    Title = "Admin",
+    Icon = "crown",
+    Locked = false,
+})
+-- ==============================
+-- INFO
+-- ==============================
+
+local AboutSection = InfoTab:Section({Title = "Info", Icon = "info", Opened = true})
+
+    AboutSection:Image({
+        Image = "https://raw.githubusercontent.com/nxvap/Hexagon/main/img/banner.png",
+        AspectRatio = "16:9",
+        Radius = 9,
+    })
+    
+    AboutSection:Space({ Columns = 4 })
+    
+    AboutSection:Section({
+        Title = "Hexagon Client for Brookhaven 🏡RP",
+        TextSize = 24,
+        FontWeight = Enum.FontWeight.SemiBold,
+    })
+
+    AboutSection:Space()
+    
+    AboutSection:Section({
+        Title = [[Hexagon Client seeks to be a reliable and trustworthy option compared to other options.
+Developed by Nova (Owner @Roun95, Co-Owner @Deluxe_Studios).
+Hexagon integrates multilingual for easier use, Best for all, hassle-free, completely free.
+Hexagon offerts what the competition doesn't: variety in options innovative, useful and reliable.]],
+        TextSize = 18,
+        TextTransparency = .35,
+        FontWeight = Enum.FontWeight.Medium,
+    })
+
+    AboutSection:Section({
+        Title = [[NEWS 1.1.7 Halloween Update:
+Added: (Unlocked) Vehicle Speed and Turbo, NEW Advanced Character Editor, NEW All Halloween Event, more...
+Credits: Nova & BRUTON HUB
+
+NEWS 1.1.5:
+Added: Canoe Spam, Bug Players, Destroy Server V2, Skybox Character
+Credits: BRUTON HUB]],
+        TextSize = 14,
+        TextTransparency = .45,
+        FontWeight = Enum.FontWeight.Medium,
+    })
+
+    InfoTab:Button({
+    Title = "Join the Discord official",
+    Desc = "Copy Discord Link",
+    Callback = function()
+    		setclipboard("https://discord.gg/Q9R5FDapth")
+		end
+	})
+
+
+-- ==============================
+-- PLAYER
+-- ==============================
+
+PlayerTab:Section({Title = "Player", Icon = "user"})
+
+PlayerTab:Slider({
+    Title = "Speed",
+	Step = 1,
+    Value = {
+        Min = 1,
+        Max = 500,
+        Default = 16,
+    },
+    Callback = function(Value)
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+
+        if humanoid then
+            humanoid.WalkSpeed = Value
+		end
+	end
+})
+
+PlayerTab:Slider({
+    Title = "JumpPower",
+	Step = 1,
+    Value = {
+        Min = 1,
+        Max = 500,
+        Default = 50,
+    },
+    Callback = function(Value)
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+
+        if humanoid then
+            humanoid.JumpPower = Value
+		end
+	end
+})
+
+PlayerTab:Slider({
+    Title = "Gravity",
+	Step = 1,
+    Value = {
+        Min = 1,
+        Max = 500,
+        Default = 196,
+    },
+    Callback = function(Value)
+        Workspace.Gravity = Value
+    end
+})
+
+local infJumpEnabled = false
+UIS.JumpRequest:Connect(function()
+	if infJumpEnabled then
+    	local character = game.Players.LocalPlayer.Character
+		if character and character:FindFirstChild("Humanoid") then
+			character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+		end
+	end
+end)
+
+PlayerTab:Toggle({
+	Title = "Infinite Jump",
+    Default = false,
+    Callback = function(Value)
+       infJumpEnabled = Value
+    end
+})
+
+local ResetValuesTab
+ResetValuesTab = PlayerTab:Button({
+	Title = "Reset Values",
+    Icon = "mouse",
+    Default = false,
+    Callback = function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if humanoid then
+        humanoid.WalkSpeed = 16
+    	humanoid.JumpPower = 50
+    end
+    Workspace.Gravity = 196.2
+    infJumpEnabled = false
+    ResetValuesTab:Highlight()
+    end
+})
+
+-- ==============================
+-- AVATAR
+-- ==============================
+
+local Remotes = ReplicatedStorage.Remotes
+local Wear, ChangeCharacterBody = Remotes.Wear, Remotes.ChangeCharacterBody
+
+AvatarTab:Section({Title = "Copy Character", Icon = "tag"})
+
+local PlayerValue
+local Target = nil
+
+local function getPlayerNames()
+    local playerNames = {}
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player.Name ~= LocalPlayer.Name then
+            table.insert(playerNames, player.Name)
+        end
+    end
+    return playerNames
+end
+
+local updateList = AvatarTab:Dropdown({
+    Title = "Select Player",
+    Values = getPlayerNames(),
+    Callback = function(playername)
+        PlayerValue = playername
+        Target = playername
+    end
+})
+
+local function updatePlayers()
+    updateList:Refresh(getPlayerNames())
+end
+
+AvatarTab:Button({
+    Title = "Update List",
+    Callback = function()
+    updatePlayers()
+end})
+
+Players.PlayerAdded:Connect(updatePlayers)
+Players.PlayerRemoving:Connect(updatePlayers)
+
+AvatarTab:Button({
+    Title = "Copy Character",
+    Callback = function()
+        if not Target then return end
+
+        local LChar = LocalPlayer.Character
+        local TPlayer = Players:FindFirstChild(Target)
+
+        if TPlayer and TPlayer.Character then
+            local LHumanoid = LChar and LChar:FindFirstChildOfClass("Humanoid")
+            local THumanoid = TPlayer.Character:FindFirstChildOfClass("Humanoid")
+            if LHumanoid and THumanoid then
+                local LDesc = LHumanoid:GetAppliedDescription()
+                for _, acc in ipairs(LDesc:GetAccessories(true)) do
+                    if acc.AssetId and tonumber(acc.AssetId) then
+                        Wear:InvokeServer(tonumber(acc.AssetId))
+                        task.wait(0.2)
+                    end
+                end
+                if tonumber(LDesc.Shirt) then
+                    Wear:InvokeServer(tonumber(LDesc.Shirt))
+                    task.wait(0.2)
+                end
+                if tonumber(LDesc.Pants) then
+                    Wear:InvokeServer(tonumber(LDesc.Pants))
+                    task.wait(0.2)
+                end
+                if tonumber(LDesc.Face) then
+                    Wear:InvokeServer(tonumber(LDesc.Face))
+                    task.wait(0.2)
+                end
+                local PDesc = THumanoid:GetAppliedDescription()
+                local argsBody = {
+                    [1] = {
+                        [1] = PDesc.Torso,
+                        [2] = PDesc.RightArm,
+                        [3] = PDesc.LeftArm,
+                        [4] = PDesc.RightLeg,
+                        [5] = PDesc.LeftLeg,
+                        [6] = PDesc.Head
+                    }
+                }
+                ChangeCharacterBody:InvokeServer(unpack(argsBody))
+                task.wait(0.5)
+                if tonumber(PDesc.Shirt) then
+                    Wear:InvokeServer(tonumber(PDesc.Shirt))
+                    task.wait(0.3)
+                end
+                if tonumber(PDesc.Pants) then
+                    Wear:InvokeServer(tonumber(PDesc.Pants))
+                    task.wait(0.3)
+                end
+                if tonumber(PDesc.Face) then
+                    Wear:InvokeServer(tonumber(PDesc.Face))
+                    task.wait(0.3)
+                end
+                for _, v in ipairs(PDesc:GetAccessories(true)) do
+                    if v.AssetId and tonumber(v.AssetId) then
+                        Wear:InvokeServer(tonumber(v.AssetId))
+                        task.wait(0.3)
+                    end
+                end
+                local SkinColor = TPlayer.Character:FindFirstChild("Body Colors")
+                if SkinColor then
+                    Remotes.ChangeBodyColor:FireServer(tostring(SkinColor.HeadColor))
+                    task.wait(0.3)
+                end
+            end
+        end
+	end
+})
+
+AvatarTab:Section({Title = "Character Clothing", Icon = "tag"})
+
+local function equipClothes(clothesID, clothesName)
+    local args = { clothesID }
+    local success = pcall(function()
+        return Wear:InvokeServer(unpack(args))
+    end)
+    if success then
+        print("Clothes " .. clothesName .. " Equipped with success")
+    else
+        print("Failed to equip " .. clothesName)
+    end
+end
+
+AvatarTab:Button({
+    Title = "Black Arm Bandages 1.0",
+    Desc = "TYPE: Shirt 👕",
+    Locked = false,
+    Callback = function()
+        equipClothes(11458078735, "Black-Arm-Bandages-1-0")
+    end
+})
+
+AvatarTab:Button({
+    Title = "Black Oversized Warmers",
+    Desc = "TYPE: Sweater 👕",
+    Locked = false,
+    Callback = function()
+        equipClothes(10789914680, "Black-Oversized-Warmers")
+    end
+})
+
+AvatarTab:Button({
+    Title = "Black Oversized Off Shoulder Hoodie",
+    Desc = "TYPE: Sweater 👕",
+    Locked = false,
+    Callback = function()
+        equipClothes(18396592827, "Black-Oversized-Off-Shoulder-Hoodie")
+    end
+})
+
+AvatarTab:Button({
+    Title = "White Oversized Off Shoulder Hoodie",
+    Desc = "TYPE: Sweater 👕",
+    Locked = false,
+    Callback = function()
+        equipClothes(18396754379, "White-Oversized-Off-Shoulder-Hoodie")
+    end
+})
+
+AvatarTab:Button({
+    Title = "Left Leg Spikes",
+    Desc = "TYPE: Pants 👖",
+    Locked = false,
+    Callback = function()
+        equipClothes(10814325667, "Left-Leg-Spikes")
+    end
+})
+
+AvatarTab:Section({Title = "Character Editor", Icon = "tag"})
+
+AvatarTab:Button({
+    Title = "Mini Plushie and Headless",
+    Desc = "TYPE: Body ✏️",
+    Locked = false,
+    Callback = function()
+	ChangeCharacterBody:InvokeServer({
+		[1] = 112722466960512, -- Torso
+		[2] = 76079756909323, -- Right Arm
+		[3] = 82598238110471, -- Left Arm
+		[4] = 107431241133468, -- Right Leg
+		[5] = 103380121023771, -- Left Leg
+		[6] = 134082579, -- Head
+	})
+	end
+})
+
+AvatarTab:Button({
+    Title = "Invisible Character",
+    Desc = "TYPE: Body ✏️",
+    Locked = false,
+    Callback = function()
+	ChangeCharacterBody:InvokeServer({
+		[1] = 15312911732, -- Torso
+		[2] = 14532583477, -- Right Arm
+		[3] = 14532583469, -- Left Arm
+		[4] = 14532583517, -- Right Leg
+		[5] = 14532583483, -- Left Leg
+		[6] = 134082579, -- Head
+	})
+	end
+})
+
+AvatarTab:Button({
+    Title = "S15 Thin Hourglass and Headless",
+    Desc = "TYPE: Body ✏️",
+    Locked = false,
+    Callback = function()
+	ChangeCharacterBody:InvokeServer({
+		[1] = 129543160215232,
+		[2] = 133466157082146,
+		[3] = 73001997018020,
+		[4] = 128776848621889,
+		[5] = 81547744637409,
+		[6] = 134082579,
+	})
+	end
+})
+
+AvatarTab:Button({
+    Title = "Inf15-Thin and Headless",
+    Desc = "TYPE: Body ✏️",
+    Locked = false,
+    Callback = function()
+	ChangeCharacterBody:InvokeServer({
+		[1] = 92757812011061,
+		[2] = 99519402284266,
+		[3] = 115905570886697,
+		[4] = 84418052877367,
+		[5] = 124343282827669,
+		[6] = 134082579,
+	})
+	end
+})
+
+AvatarTab:Button({
+    Title = "Blush Fashion Doll and Headless",
+    Desc = "TYPE: Body ✏️",
+    Locked = false,
+    Callback = function()
+	ChangeCharacterBody:InvokeServer({
+		[1] = 115745153758680,
+		[2] = 18839824209,
+		[3] = 18839824132,
+		[4] = 0,
+		[5] = 0,
+		[6] = 134082579,
+	})
+	end
+})
+
+AvatarTab:Button({
+    Title = "Headless",
+    Desc = "TYPE: Head ✏️",
+    Locked = false,
+    Callback = function()
+	ChangeCharacterBody:InvokeServer({
+		[1] = 0,
+		[2] = 0,
+		[3] = 0,
+		[4] = 0,
+		[5] = 0,
+		[6] = 134082579,
+	})
+	end
+})
+
+AvatarTab:Button({
+    Title = "Headless and Korblox",
+    Desc = "TYPE: Body ✏️",
+    Locked = false,
+    Callback = function()
+	ChangeCharacterBody:InvokeServer({
+		[1] = 0,
+		[2] = 0,
+		[3] = 0,
+		[4] = 139607718,
+		[5] = 0,
+		[6] = 134082579,
+	})
+	end
+})
+
+AvatarTab:Button({
+    Title = "More Coming Soon",
+    Desc = "TYPE: ? ✏️",
+    Locked = false,
+    Callback = function()
+	newNotify("Join the discord to make a suggestion")
+	end
+})
+
+AvatarTab:Section({Title = "Advanced Character Editor", Icon = "tag"})
+
+bodyParts = {
+    Torso = nil,
+    RightArm = nil,
+    LeftArm = nil,
+    RightLeg = nil,
+    LeftLeg = nil,
+    Head = nil
+}
+
+AvatarTab:Input({
+    Title = "Torso ✏️",
+    Desc = "Enter Torso ID",
+    Callback = function(Value)
+        if Value == "" then
+            bodyParts.Torso = nil
+            print("⚠️ Torso: empty")
+        else
+            local id = tonumber(Value) or 0
+            bodyParts.Torso = id
+            print("Torso: " .. id)
+        end
+    end
+})
+
+AvatarTab:Input({
+    Title = "Right Arm ✏️",
+    Desc = "Enter Right Arm ID",
+    Callback = function(Value)
+        if Value == "" then
+            bodyParts.RightArm = nil
+            print("⚠️ Right Arm: empty")
+        else
+            local id = tonumber(Value) or 0
+            bodyParts.RightArm = id
+            print("Right Arm: " .. id)
+        end
+    end
+})
+
+AvatarTab:Input({
+    Title = "Left Arm ✏️",
+    Desc = "Enter Left Arm ID",
+    Callback = function(Value)
+        if Value == "" then
+            bodyParts.LeftArm = nil
+            print("⚠️ Left Arm: empty")
+        else
+            local id = tonumber(Value) or 0
+            bodyParts.LeftArm = id
+            print("Left Arm: " .. id)
+        end
+    end
+})
+
+AvatarTab:Input({
+    Title = "Right Leg ✏️",
+    Desc = "Enter Right Leg ID",
+    Callback = function(Value)
+        if Value == "" then
+            bodyParts.RightLeg = nil
+            print("⚠️ Right Leg: empty")
+        else
+            local id = tonumber(Value) or 0
+            bodyParts.RightLeg = id
+            print("Right Leg: " .. id)
+        end
+    end
+})
+
+AvatarTab:Input({
+    Title = "Left Leg ✏️",
+    Desc = "Enter Left Leg ID",
+    Callback = function(Value)
+        if Value == "" then
+            bodyParts.LeftLeg = nil
+            print("⚠️ Left Leg: empty")
+        else
+            local id = tonumber(Value) or 0
+            bodyParts.LeftLeg = id
+            print("Left Leg: " .. id)
+        end
+    end
+})
+
+AvatarTab:Input({
+    Title = "Head ✏️",
+    Desc = "Enter Head ID",
+    Callback = function(Value)
+        if Value == "" then
+            bodyParts.Head = nil
+            print("⚠️ Head: empty")
+        else
+            local id = tonumber(Value) or 0
+            bodyParts.Head = id
+            print("Head: " .. id)
+        end
+    end
+})
+
+AvatarTab:Section({Title = "Load Character Parts", Icon = "tag"})
+
+bodyPartSelected = "Head"
+
+AvatarTab:Dropdown({
+    Title = "Select Body Part",
+    Desc = "Choose a part you want to equip",
+    Values = {"Torso", "Right Arm", "Left Arm", "Right Leg", "Left Leg", "Head"},
+	Value = "Head",
+    Callback = function(Value)
+        bodyPartSelected = Value
+        print("Selected Part: " .. Value)
+    end
+})
+
+AvatarTab:Button({
+    Title = "Equip Selected Part",
+    Desc = "Equip the selected body part",
+    Callback = function()
+        local args = {
+            [1] = {
+                [1] = 0, -- Torso
+                [2] = 0, -- Right Arm
+                [3] = 0, -- Left Arm
+                [4] = 0, -- Right Leg
+                [5] = 0, -- Left Leg
+                [6] = 0  -- Head
+            }
+        }
+        
+        -- Defines the part that will be loaded
+        if bodyPartSelected == "Torso" and bodyParts.Torso then
+            args[1][1] = bodyParts.Torso
+            print("Equip Torso: " .. bodyParts.Torso)
+        elseif bodyPartSelected == "Right Arm" and bodyParts.RightArm then
+            args[1][2] = bodyParts.RightArm
+            print("Equip Right Arm: " .. bodyParts.RightArm)
+        elseif bodyPartSelected == "Left Arm" and bodyParts.LeftArm then
+            args[1][3] = bodyParts.LeftArm
+            print("Equip Left Arm: " .. bodyParts.LeftArm)
+        elseif bodyPartSelected == "Right Leg" and bodyParts.RightLeg then
+            args[1][4] = bodyParts.RightLeg
+            print("Equip Right Leg: " .. bodyParts.RightLeg)
+        elseif bodyPartSelected == "Left Leg" and bodyParts.LeftLeg then
+            args[1][5] = bodyParts.LeftLeg
+            print("Equip Left Leg: " .. bodyParts.LeftLeg)
+        elseif bodyPartSelected == "Head" and bodyParts.Head then
+            args[1][6] = bodyParts.Head
+            print("Equip Head: " .. bodyParts.Head)
+        else
+            print("❌ " .. bodyPartSelected .. " Is empty, Enter the ID of a body part")
+            return
+        end
+        
+        -- Executa o remote
+        pcall(function()
+            ChangeCharacterBody:InvokeServer(unpack(args))
+        end)
+    end
+})
+
+AvatarTab:Button({
+    Title = "Equip All Parts",
+    Desc = "Equip all selected body parts",
+    Callback = function()
+        -- Check if a body part is selected
+        local noBodyPartSelected = bodyParts.Torso or bodyParts.RightArm or 
+                                         bodyParts.LeftArm or bodyParts.RightLeg or 
+                                         bodyParts.LeftLeg or bodyParts.Head
+        
+        if not noBodyPartSelected then
+            print("❌ No part was selected, Enter the ID of a body part.")
+            return
+        end
+        
+        local args = {
+            [1] = {
+                [1] = bodyParts.Torso or 0,
+                [2] = bodyParts.RightArm or 0,
+                [3] = bodyParts.LeftArm or 0,
+                [4] = bodyParts.RightLeg or 0,
+                [5] = bodyParts.LeftLeg or 0,
+                [6] = bodyParts.Head or 0
+            }
+        }
+        
+        print("✅ Loading all body parts:")
+        if bodyParts.Torso then print("Torso: " .. bodyParts.Torso) end
+        if bodyParts.RightArm then print("Right Arm: " .. bodyParts.RightArm) end
+        if bodyParts.LeftArm then print("Left Arm: " .. bodyParts.LeftArm) end
+        if bodyParts.RightLeg then print("Right Leg: " .. bodyParts.RightLeg) end
+        if bodyParts.LeftLeg then print("Left Leg: " .. bodyParts.LeftLeg) end
+        if bodyParts.Head then print("Head: " .. bodyParts.Head) end
+        
+        pcall(function()
+            ChangeCharacterBody:InvokeServer(unpack(args))
+        end)
+    end
+})
+
+AvatarTab:Section({Title = "Character Animation", Icon = "tag"})
+
+AvatarTab:Button({
+    Title = "adidas Sports Animation Pack",
+    Desc = "TYPE: Animation ✏️",
+    Locked = false,
+    Callback = function()
+	Wear:InvokeServer(18538170170)
+	task.wait(0.3)
+	Wear:InvokeServer(18538164337)
+	task.wait(0.3)
+	Wear:InvokeServer(18538150608)
+	task.wait(0.3)
+	Wear:InvokeServer(18538153691)
+	task.wait(0.3)
+	Wear:InvokeServer(18538133604)
+	task.wait(0.3)
+	Wear:InvokeServer(18538158932)
+	task.wait(0.3)
+	Wear:InvokeServer(18538146480)
+	task.wait(0.3)
+	end
+})
+
+AvatarTab:Button({
+    Title = "adidas Community Animation Pack",
+    Desc = "TYPE: Animation ✏️",
+    Locked = false,
+    Callback = function()
+	Wear:InvokeServer(123695349157584)
+	task.wait(0.3)
+	Wear:InvokeServer(93993406355955)
+	task.wait(0.3)
+	Wear:InvokeServer(106810508343012)
+	task.wait(0.3)
+	Wear:InvokeServer(106537993816942)
+	task.wait(0.3)
+	Wear:InvokeServer(126354114956642)
+	task.wait(0.3)
+	Wear:InvokeServer(124765145869332)
+	task.wait(0.3)
+	Wear:InvokeServer(115715495289805)
+	task.wait(0.3)
+	end
+})
+
+AvatarTab:Button({
+    Title = "Catwalk Glam Animation Pack by e.l.f.",
+    Desc = "TYPE: Animation ✏️",
+    Locked = false,
+    Callback = function()
+	Wear:InvokeServer(104741822987331)
+	task.wait(0.3)
+	Wear:InvokeServer(72706690305027)
+	task.wait(0.3)
+	Wear:InvokeServer(101279640971758)
+	task.wait(0.3)
+	Wear:InvokeServer(138641066989023)
+	task.wait(0.3)
+	Wear:InvokeServer(75036746190467)
+	task.wait(0.3)
+	Wear:InvokeServer(112231179705221)
+	task.wait(0.3)
+	Wear:InvokeServer(103190462987721)
+	task.wait(0.3)
+	end
+})
+
+AvatarTab:Button({
+    Title = "Bold Animation Pack by e.l.f.",
+    Desc = "TYPE: Animation ✏️",
+    Locked = false,
+    Callback = function()
+	Wear:InvokeServer(16744204409)
+	task.wait(0.3)
+	Wear:InvokeServer(16744207822)
+	task.wait(0.3)
+	Wear:InvokeServer(16744209868)
+	task.wait(0.3)
+	Wear:InvokeServer(16744212581)
+	task.wait(0.3)
+	Wear:InvokeServer(16744214662)
+	task.wait(0.3)
+	Wear:InvokeServer(16744217055)
+	task.wait(0.3)
+	Wear:InvokeServer(16744219182)
+	task.wait(0.3)
+	end
+})
+
+AvatarTab:Button({
+    Title = "No Boundaries Animation Pack by Walmart",
+    Desc = "TYPE: Animation ✏️",
+    Locked = false,
+    Callback = function()
+	Wear:InvokeServer(18755919175)
+	task.wait(0.3)
+	Wear:InvokeServer(18755922352)
+	task.wait(0.3)
+	Wear:InvokeServer(18755930927)
+	task.wait(0.3)
+	Wear:InvokeServer(18755925411)
+	task.wait(0.3)
+	Wear:InvokeServer(18755933883)
+	task.wait(0.3)
+	Wear:InvokeServer(18755938274)
+	task.wait(0.3)
+	Wear:InvokeServer(18755942776)
+	task.wait(0.3)
+	end
+})
+
+-- ==============================
+-- PROFILE
+-- ==============================
+
+ProfileTab:Section({Title = "Names", Icon = "pencil"})
+
+local names = {
+    {"ＨＥＸＡＧＯＮ ＨＵＢ::", " ＨＥＸＡＧＯＮ ＨＵＢ:: "},
+    {"ＪＯＫＥＲ", " ＪＯＫＥＲ "},
+    {"ＡＤＭＩＮ", " ＡＤＭＩＮ "},
+    {"ＤＥＶ", " ＤＥＶ "},
+    {"ＣＯ０ＬＫＩＤ", " ＣＯ０ＬＫＩＤ "},
+    {"ＴＵＢＥＲＳ９３", " ＴＵＢＥＲＳ９３ "},
+}
+
+for _, nm in ipairs(names) do
+    ProfileTab:Button({
+        Title = "Name: " .. nm[1],
+        Callback = function()
+            RE["1RPNam1eTex1t"]:FireServer("RolePlayName", nm[2])
+        end
+    })
+end
+
+-- ==============================
+-- MUSIC
+-- ==============================
+
+MusicTab:Section({Title = "Music All Server", Icon = "music"})
+
+local audios = {
+    {Name = "Amongus sound", ID = 6651571134},
+    {Name = "Sus", ID = 6701126635},
+    {Name = "SUS", ID = 7153419575},
+    {Name = "Sonic.exe", ID = 2496367477},
+    {Name = "Mandrake detected", ID = 9068077052},
+    {Name = "Gemido ultra rapido", ID = 128863565301778},
+    {Name = "uwu", ID = 76820720070248},
+    {Name = "Gemido1", ID = 105263704862377},
+    {Name = "Gemido2", ID = 84207358477461},
+    {Name = "Ai meu cuzin", ID = 130714479795369},
+    {Name = "Ai meu cuzin (slowed)", ID = 71895544093312},
+    {Name = "Hentai wiaaaan", ID = 88332347208779},
+    {Name = "Nano sempai", ID = 96052357637052},
+    {Name = "Naooo ah", ID = 126606012725276},
+    {Name = "Bohahahaha", ID = 95939584395786},
+    {Name = "OH MY GOD", ID = 73349649774476},
+    {Name = "ChinaBoy", ID = 84403553163931},
+    {Name = "Mangekyou Sharingan", ID = 1592708450},
+    {Name = "Shinra Tensei", ID = 127171723747143}
+}
+
+local audioNames = {}
+for _, audio in ipairs(audios) do
+    table.insert(audioNames, audio.Name)
+end
+
+MusicTab:Dropdown({
+    Title = "Select Player",
+    Values = audioNames,
+	Value = audioNames[1],
+    Callback = function(value)
+        for _, audio in ipairs(audios) do
+            if audio.Name == value then
+                audioID = audio.ID
+                break
+            end
+        end
+    end
+})
+
+local function fireServer(eventName, args)
+    local event = ReplicatedStorage:FindFirstChild("RE") and ReplicatedStorage.RE:FindFirstChild(eventName)
+    if event then
+        pcall(function()
+            event:FireServer(unpack(args))
+        end)
+    end
+end
+
+local audioLoop = false
+
+local function loopAudio()
+    while audioLoop do
+        if audioID then
+			local args = { Workspace, audioID, 1 }
+            ReplicatedStorage.RE:FindFirstChild("1Gu1nSound1s"):FireServer(unpack(args))
+            local sound = Instance.new("Sound", Workspace)
+            sound.SoundId = "rbxassetid://" .. audioID
+            sound:Play()
+        end
+        task.wait(1)
+    end
+end
+
+local function playAudio()
+    local args = { Workspace, audioID, 1 }
+		ReplicatedStorage.RE:FindFirstChild("1Gu1nSound1s"):FireServer(unpack(args))
+        local sound = Instance.new("Sound", Workspace)
+        sound.SoundId = "rbxassetid://" .. audioID
+        sound:Play()
+        task.wait(3)
+        sound:Destroy()
+end
+
+MusicTab:Button({
+	Title = "Play Audio",
+    Callback = function()
+	    if audioID then
+    	    playAudio(audioID)
+    	end
+    end
+})
+
+MusicTab:Toggle({
+	Title = "Loop Audio",
+    Default = false,
+    Callback = function(value)
+        audioLoop = value
+        if audioLoop then
+            task.spawn(loopAudio)
+        end
+    end
+})
+-- ==============================
+-- TROLL
+-- ==============================
+
+TrollTab:Section({Title = "Player", Icon = "ghost"})
+
+local selectedPlayerName = nil
+local headsitActive = false
+local function headsitOnPlayer(targetPlayer)
+    if not targetPlayer.Character or not targetPlayer.Character:FindFirstChild("Head") then
+        newNotify("Character has no Head")
+        return false
+    end
+    local targetHead = targetPlayer.Character.Head
+    local localRoot = Character:FindFirstChild("HumanoidRootPart")
+    if not localRoot then
+        newNotify("Character has no HumanoidRootPart")
+        return false
+    end
+    localRoot.CFrame = targetHead.CFrame * CFrame.new(0, 2.2, 0)
+    for _, v in pairs(localRoot:GetChildren()) do
+        if v:IsA("WeldConstraint") then
+            v:Destroy()
+        end
+    end
+    local weld = Instance.new("WeldConstraint")
+    weld.Part0 = localRoot
+    weld.Part1 = targetHead
+    weld.Parent = localRoot
+    if Humanoid then
+        Humanoid.Sit = true
+    end
+    newNotify("Headsit activated on ", targetPlayer.Name)
+    return true
+end
+
+local function removeHeadsit()
+    local localRoot = Character:FindFirstChild("HumanoidRootPart")
+    if localRoot then
+        for _, v in pairs(localRoot:GetChildren()) do
+            if v:IsA("WeldConstraint") then
+                v:Destroy()
+            end
+        end
+    end
+    if Humanoid then
+        Humanoid.Sit = false
+    end
+    newNotify("Headsit disabled")
+end
+
+local function findPlayerByPartialName(partial)
+    partial = partial:lower()
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= localPlayer and player.Name:lower():sub(1, #partial) == partial then
+            return player
+        end
+    end
+    return nil
+end
+
+local function headsitNotify(player)
+	newNotify("Player selected", player.Name .. " selected", 5, Players:GetUserThumbnailAsync(player.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size100x100))
+end
+
+TrollTab:Input({
+    Title = "Head Sit",
+    Desc = "Enter part of the player name",
+    Callback = function(Value)
+    local foundPlayer = findPlayerByPartialName(Value)
+        if foundPlayer then
+            selectedPlayerName = foundPlayer.Name
+            headsitNotify(foundPlayer)
+        else
+            newNotify("No player found with that name")
+        end
+    end
+})
+
+TrollTab:Button({
+    Title = "Enable Headsit",
+    Callback = function()
+    if not selectedPlayerName then
+        return
+    end
+    if not headsitActive then
+        local target = Players:FindFirstChild(selectedPlayerName)
+        if target and headsitOnPlayer(target) then
+			headsitActive = true
+        end
+    else
+        removeHeadsit()
+		headsitActive = false
+    end
+end
+})
+
+TrollTab:Toggle({
+	Title = "ESP Players",
+    Callback = function(Enabled)
+        local function CreateESP(Player)
+            if not Player.Character or not Player.Character:FindFirstChild("HumanoidRootPart") then return end
+
+            local Character = Player.Character
+            local HRP = Character.HumanoidRootPart
+
+            local ESP = Instance.new("BillboardGui")
+            ESP.Name = "ESP_" .. Player.Name
+            ESP.Adornee = HRP
+            ESP.Size = UDim2.new(0, 100, 0, 50)
+            ESP.StudsOffset = Vector3.new(0, 2.5, 0)
+            ESP.AlwaysOnTop = true
+            ESP.Parent = HRP
+
+            local NameLabel = Instance.new("TextLabel")
+            NameLabel.Name = "NameLabel"
+			NameLabel.BackgroundTransparency = 1
+			NameLabel.Text = Player.Name
+			NameLabel.TextColor3 = Color3.fromRGB(220, 220, 220)
+	        NameLabel.Size = UDim2.new(1, 0, 0, 20)
+            NameLabel.Parent = ESP
+        end
+
+        for _, Player in pairs(Players:GetPlayers()) do
+            if Player ~= LocalPlayer and Player.Character then
+                local HRP = Player.Character:FindFirstChild("HumanoidRootPart")
+                if HRP then
+                    local OldESP = HRP:FindFirstChild("ESP_" .. Player.Name)
+                    if OldESP then
+                        OldESP:Destroy()
+                    end
+                end
+            end
+        end
+
+        if Enabled then
+            for _, Player in pairs(Players:GetPlayers()) do
+                if Player ~= LocalPlayer then
+                    Player.CharacterAdded:Connect(function()
+                        CreateESP(Player)
+                    end)
+                    if Player.Character then
+                        CreateESP(Player)
+                    end
+                end
+            end
+
+            Players.PlayerAdded:Connect(function(Player)
+                Player.CharacterAdded:Connect(function()
+                    CreateESP(Player)
+                end)
+            end)
+        end
+    end
+})
+
+TrollTab:Section({Title = "House", Icon = "ghost"})
+
+TrollTab:Button({
+    Title = "Unban all houses",
+    Callback = function()
+        local successCount = 0
+        local failCount = 0
+        for i = 1, 37 do
+            local bannedBlockName = "BannedBlock" .. i
+            local bannedBlock = Workspace:FindFirstChild(bannedBlockName, true)
+            if bannedBlock then
+                local success, _ = pcall(function()
+                    bannedBlock:Destroy()
+                end)
+                if success then
+                    successCount = successCount + 1
+                else
+                    failCount = failCount + 1
+                end
+            end
+        end
+        for _, house in pairs(Workspace:GetDescendants()) do
+            if house.Name:match("BannedBlock") then
+                local success, _ = pcall(function()
+                    house:Destroy()
+                end)
+                if success then
+                    successCount = successCount + 1
+                else
+                    failCount = failCount + 1
+                end
+            end
+        end
+        if successCount > 0 then
+			newNotify("✅ Success", "Unbanned from " .. successCount .. " houses")
+        end
+        if failCount > 0 then
+			newNotify("❌ Failed", "Not unbanned from " .. failCount .. " houses")
+        end
+        if successCount == 0 and failCount == 0 then
+			newNotify("⚠️ Warn", "Not banned houses find")
+        end
+    end
+})
+
+TrollTab:Section({Title = "Troll Scripts", Icon = "ghost"})
+
+TrollTab:Button({
+    Title = "Bring Parts",
+	Desc = "GAME: Universal Script 📌, TYPE: Interface 🖥️",
+    Callback = function()
+        loadstring(game:HttpGet("https://github.com/nxvap/cdn/raw/db/addons/bringparts"))()
+	end
+})
+
+TrollTab:Button({
+    Title = "[M] Jerk Off R6/R15",
+	Desc = "GAME: Universal Script 📌, TYPE: Tool 🛠️",
+    Callback = function()
+        loadstring(game:HttpGet("https://github.com/nxvap/cdn/raw/db/addons/njoff"))()
+	end
+})
+
+TrollTab:Section({Title = "Admin Commands", Icon = "ghost"})
+
+local ReplicatedRemotes = game:GetService("ReplicatedStorage"):WaitForChild("Remotes")
+local Humanoid = (LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()):WaitForChild("Humanoid")
+
+ReplicatedRemotes:WaitForChild("ChangeCharacterBody"):InvokeServer({
+    100839513065432,
+    119032106683081,
+    134162178631486,
+    112132665744785,
+    134568824619589
+})
+
+local AnimationTrack = Instance.new("Animation")
+AnimationTrack.AnimationId = "rbxassetid://101852027997337"
+
+local Animator = Humanoid:FindFirstChildOfClass("Animator")
+if not Animator then
+    Animator = Instance.new("Animator")
+    Animator.Parent = Humanoid
+end
+
+local LoadedAnimation = Animator:LoadAnimation(AnimationTrack)
+LoadedAnimation.Priority = Enum.AnimationPriority.Action
+LoadedAnimation.Looped = true
+
+TrollTab:Toggle({
+	Title = "Skybox toggle",
+    Desc = "You invade the beginning with many canoes (by Bruton)",
+    Default = false,
+    Callback = function(IsAnimationPlaying)
+        if IsAnimationPlaying then
+            LoadedAnimation:Play()
+        else
+            LoadedAnimation:Stop()
+        end
+    end
+})
+
+
+local SkyboxHL
+SkyboxHL = TrollTab:Button({
+    Title = "Skybox Character",
+	Desc = "BY: BRUTON HUB",
+    Icon = "rbxassetid://10709791437",
+    Callback = function()
+        local Players = game:GetService("Players")
+        local ReplicatedStorage = game:GetService("ReplicatedStorage")
+        local LocalPlayer = Players.LocalPlayer
+
+        local Remotes = ReplicatedStorage:WaitForChild("Remotes")
+        local WearRemote = Remotes:WaitForChild("Wear")
+        local ChangeCharacterBody = Remotes:WaitForChild("ChangeCharacterBody")
+        local WearShirtRemote = Remotes:WaitForChild("WearShirt")
+		local CurrentTrack
+        local BodyId = "100839513065432"
+        local SkyboxActive = false
+        local Humanoid, Animator
+
+        local function SetupCharacter(char)
+            Humanoid = char:WaitForChild("Humanoid")
+            Animator = Humanoid:FindFirstChildOfClass("Animator")
+            if not Animator then
+                Animator = Instance.new("Animator", Humanoid)
+            end
+        end
+
+        SetupCharacter(LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait())
+        LocalPlayer.CharacterAdded:Connect(SetupCharacter)
+        local function ApplyAccessories()
+
+            local Desc = Humanoid:GetAppliedDescription()
+            for _, accessory in ipairs(Desc:GetAccessories(true)) do
+                if accessory.AssetId then
+                    pcall(function()
+                        WearRemote:InvokeServer(accessory.AssetId)
+                    end)
+                end
+            end
+        end
+		local function ApplyBody()
+            pcall(function()
+                ChangeCharacterBody:InvokeServer({
+                    [1] = tonumber(BodyId),
+                    [2] = nil,
+                    [3] = nil,
+                    [4] = nil,
+                    [5] = nil,
+                    [6] = nil
+                })
+            end)
+        end
+
+       local function PlayAnimation()
+            local AnimId = "rbxassetid://101852027997337"
+            local newAnim = Instance.new("Animation")
+            newAnim.AnimationId = AnimId
+
+            local newTrack
+            pcall(function()
+                newTrack = Animator:LoadAnimation(newAnim)
+                newTrack.Priority = Enum.AnimationPriority.Action4
+                newTrack:Play(0.1, 1, 1)
+            end)
+
+            CurrentTrack = newTrack
+        end
+
+        local function StopAnimation()
+            if CurrentTrack then
+                pcall(function()
+                    CurrentTrack:Stop(0)
+                end)
+            end
+        end
+
+        SkyboxActive = not SkyboxActive
+        if SkyboxActive then
+            local id = tonumber(getgenv().SkyboxClothID or "")
+            if id then
+                pcall(function()
+                    WearShirtRemote:InvokeServer(id)
+                end)
+            end
+            ApplyAccessories()
+            ApplyBody()
+            PlayAnimation()
+            newNotify("🔨 Activated", "Skybox character applied", 5)
+        else
+            StopAnimation()
+            newNotify("​📥 ​Disabled", "Skybox character disabled", 5)
+        end
+	SkyboxHL:Highlight()
+    end
+})
+
+local Player = Players.LocalPlayer
+
+local ClearEvent = RE:FindFirstChild("1Clea1rTool1s")
+local ToolEvent = RE:FindFirstChild("1Too1l")
+local FireEvent = RE:FindFirstChild("1Gu1n")
+
+local attackEnabled = false
+
+local function clearAllTools()
+    if ClearEvent then
+        ClearEvent:FireServer("ClearAllTools")
+    end
+end
+
+local function getAssault()
+    if ToolEvent then
+        ToolEvent:InvokeServer("PickingTools", "Assault")
+    end
+end
+
+local function hasAssault()
+    return Player.Backpack:FindFirstChild("Assault") ~= nil
+end
+
+local function fireAtPart(targetPart)
+    local gunScript = Player.Backpack:FindFirstChild("Assault")
+        and Player.Backpack.Assault:FindFirstChild("GunScript_Local")
+
+    if not gunScript or not targetPart then return end
+
+    local args = {
+        targetPart,
+        targetPart,
+        Vector3.new(1e14, 1e14, 1e14),
+        targetPart.Position,
+        gunScript:FindFirstChild("MuzzleEffect"),
+        gunScript:FindFirstChild("HitEffect"),
+        0,
+        0,
+        { false },
+        {
+            25,
+            Vector3.new(100, 100, 100),
+            BrickColor.new(29),
+            0.25,
+            Enum.Material.SmoothPlastic,
+            0.25
+        },
+        true,
+        false
+    }
+
+    FireEvent:FireServer(unpack(args))
+end
+
+local function startAssaultLoop()
+    task.spawn(function()
+        while attackEnabled do
+            clearAllTools()
+            getAssault()
+
+            repeat
+task.wait(0.2)
+            until hasAssault() or not attackEnabled
+
+            for i = 1, 3 do
+                for _, player in ipairs(Players:GetPlayers()) do
+                    if not attackEnabled then return end
+                    if player ~= Player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                        fireAtPart(player.Character.HumanoidRootPart)
+                        task.wait(0.1)
+                    end
+                end
+            end
+
+            task.wait(1)
+        end
+    end)
+end
+
+TrollTab:Toggle({
+	Title = "Destroy Server",
+    Desc = "BY: BRUTON HUB",
+    Default = false,
+    Callback = function(state)
+        attackEnabled = state
+		newNotify("🔨 Destroy Server", "Destroy server " ..(state and "enabled" or "disabled"), 5)
+        if attackEnabled then
+            startAssaultLoop()
+        end
+    end
+})
+
+local Player = Players.LocalPlayer
+
+local ClearEvent = RE:FindFirstChild("1Clea1rTool1s")
+local ToolEvent = RE:FindFirstChild("1Too1l")
+local FireEvent = RE:FindFirstChild("1Gu1n")
+
+local attackEnabled = false
+local targetName = "" 
+
+local function clearAllTools()
+    if ClearEvent then
+        ClearEvent:FireServer("ClearAllTools")
+    end
+end
+
+local function getAssault()
+    if ToolEvent then
+        ToolEvent:InvokeServer("PickingTools", "Assault")
+    end
+end
+
+local function hasAssault()
+    return Player.Backpack:FindFirstChild("Assault") ~= nil
+end
+
+local function fireAtPart(targetPart)
+    local gunScript = Player.Backpack:FindFirstChild("Assault")
+        and Player.Backpack.Assault:FindFirstChild("GunScript_Local")
+
+    if not gunScript or not targetPart then return end
+
+    local args = {
+        targetPart,
+        targetPart,
+        Vector3.new(1e14, 1e14, 1e14),
+        targetPart.Position,
+        gunScript:FindFirstChild("MuzzleEffect"),
+        gunScript:FindFirstChild("HitEffect"),
+        0,
+        0,
+        { false },
+        {
+25,
+            Vector3.new(100, 100, 100),
+            BrickColor.new(29),
+            0.25,
+            Enum.Material.SmoothPlastic,
+            0.25
+        },
+        true,
+        false
+    }
+
+    FireEvent:FireServer(unpack(args))
+end
+
+local function getTargetPlayerByPartialName(partial)
+    partial = partial:lower()
+    for _, plr in ipairs(Players:GetPlayers()) do
+        if plr.Name:lower():find(partial) then
+            return plr
+        end
+    end
+end
+
+local function startAssaultLoop()
+    task.spawn(function()
+        while attackEnabled do
+            clearAllTools()
+            getAssault()
+
+            repeat
+                task.wait(0.2)
+            until hasAssault() or not attackEnabled
+
+            local targetPlayer = getTargetPlayerByPartialName(targetName)
+            if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                for i = 1, 3 do
+                    fireAtPart(targetPlayer.Character.HumanoidRootPart)
+                    task.wait(0.1)
+                end
+            end
+
+            task.wait(1)
+        end
+    end)
+end
+
+TrollTab:Input({
+    Title = "Bug Player",
+    Desc = "Enter part of the player name",
+    Callback = function(text)
+        targetName = text
+        print("Selected Player: "..targetName)
+    end
+})
+
+TrollTab:Toggle({
+	Title = "Bug Player",
+    Desc = "BY: BRUTON HUB",
+    Default = false,
+    Callback = function(state)
+        attackEnabled = state
+		newNotify("🔨 Bug Player", "Bug Player " ..(state and "enabled" or "disabled"), 5)
+        if attackEnabled then
+            startAssaultLoop()
+        end
+    end
+})
+
+TrollTab:Section({Title = "Spam Commands", Icon = "ghost"})
+
+-- ==============================
+-- SCRIPTS
+-- ==============================
+
+ScriptsTab:Section({Title = "Graphics", Icon = "scroll"})
+
+ScriptsTab:Section({Title = "Player", Icon = "scroll"})
+
+ScriptsTab:Button({
+    Title = "Fly Gui V3",
+	Desc = "GAME: Universal Script 📌, TYPE: Interface 🖥️",
+    Callback = function()
+        loadstring(game:HttpGet("https://github.com/nxvap/source/raw/main/fly"))()
+	end
+})
+
+ScriptsTab:Button({
+    Title = "Telekinesis",
+	Desc = "Universal Script 📌, Tool 🛠️",
+    Icon = "chevron-right",
+    Callback = function()
+        loadstring(game:HttpGet("https://github.com/nxvap/cdn/raw/db/addons/ntelekinesis"))()
+	end
+})
+
+ScriptsTab:Section({Title = "Animation", Icon = "scroll"})
+
+ScriptsTab:Button({
+    Title = "AFEM Max",
+	Desc = "GAME: Universal Script 📌, TYPE: Interface 🖥️",
+    Callback = function()
+	loadstring(game:HttpGet("https://yarhm.mhi.im/scr?channel=afemmax"))()
+	end
+})
+
+ScriptsTab:Button({
+    Title = "Silly Emotes V5",
+	Desc = "GAME: Universal Script 📌, TYPE: Interface 🖥️",
+    Callback = function()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/Gazer-Ha/Gaze-stuff/refs/heads/main/Silly%20emote"))()
+	end
+})
+
+ScriptsTab:Button({
+    Title = "7yd7 Emotes",
+	Desc = "GAME: Universal Script 📌, TYPE: Interface 🖥️",
+    Callback = function()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/7yd7/Hub/refs/heads/Branch/GUIS/Emotes.lua"))()
+	end
+})
+
+-- ==============================
+-- PREMIUM
+-- ==============================
+
+PremiumTab:Section({Title = "Gamepass Vehicle Speed Unlocked", Icon = "sparkles"})
+
+local speedValue = 200
+local turboValue = 11.3
+
+-- Function to find all cars in the workspace
+local function getAllCars()
+    local cars = {}
+    if workspace.Vehicles then
+        for _, vehicle in pairs(workspace.Vehicles:GetChildren()) do
+            if vehicle:FindFirstChild("Seats") and vehicle.Seats:FindFirstChild("VehicleSeat") then
+                table.insert(cars, vehicle)
+            end
+        end
+    end
+    return cars
+end
+
+-- Function to apply values ​​to all cars
+local function applyToAllCars(valueType, value)
+    local cars = getAllCars()
+    local carsModified = 0
+    
+    if #cars == 0 then
+        newNotify("❌ Failed", "No cars found in Workspace.Vehicles")
+        return
+    end
+    
+    for _, vehicle in pairs(cars) do
+        local vehicleSeat = vehicle.Seats.VehicleSeat
+        newNotify("⌛ Wait", "Checking car: " .. vehicle.Name)
+        
+        -- List all children of VehicleSeat for debug
+        print("⚠️ Objects in VehicleSeat:")
+        for _, child in pairs(vehicleSeat:GetChildren()) do
+            print("⚠️ " .. child.Name .. " (" .. child.ClassName .. ")")
+        end
+        
+        local targetObj = vehicleSeat:FindFirstChild(valueType)
+        
+        if targetObj then
+            print("⚠️ Found " .. valueType .. " (" .. targetObj.ClassName .. ")")
+            
+            if targetObj:IsA("NumberValue") then
+                targetObj.Value = value
+                carsModified = carsModified + 1
+                print("⚠️ " .. valueType .. " (NumberValue) changed to " .. value)
+            elseif targetObj:IsA("IntValue") then
+                targetObj.Value = value
+                carsModified = carsModified + 1
+                print("⚠️ " .. valueType .. " (IntValue) changed to " .. value)
+            elseif targetObj:IsA("StringValue") then
+                targetObj.Value = tostring(value)
+                carsModified = carsModified + 1
+                print("⚠️ " .. valueType .. " (StringValue) changed to " .. value)
+            else
+                print("⚠️ " .. valueType .. " is the type " .. targetObj.ClassName)
+                -- Try changing directly
+                pcall(function()
+                    targetObj.Value = value
+                    carsModified = carsModified + 1
+                    print("⚠️ " .. valueType .. " directly changed to " .. value)
+                end)
+            end
+        else
+            print("❌ Failed " .. valueType .. " not found in VehicleSeat")
+            
+            -- Try as direct property of VehicleSeat
+            local success = pcall(function()
+                if valueType == "MaxSpeed" then
+                    vehicleSeat.MaxSpeed = value
+                elseif valueType == "Turbo" then
+                    vehicleSeat.Turbo = value
+                end
+                carsModified = carsModified + 1
+                print("⚠️ " .. valueType .. " (VehicleSeat property) changed to " .. value)
+            end)
+            
+            if not success then
+                print("❌ Failed to change " .. valueType .. " as property")
+            end
+        end
+    end
+    newNotify("✅ Success", "Total number of modified cars: " .. carsModified)
+end
+
+PremiumTab:Input({
+    Title = "Speed Power",
+    Desc = "Speed Value",
+    Callback = function(Value)
+        local numValue = tonumber(Value)
+        if numValue then
+            speedValue = numValue
+            print("✅ Applied speed value: " .. speedValue)
+        else
+            print("⚠️ Enter a value to apply speed")
+        end
+    end
+})
+
+PremiumTab:Input({
+    Title = "Turbo Power",
+    Desc = "Turbo Value",
+    Callback = function(Value)
+        local numValue = tonumber(Value)
+        if numValue then
+            turboValue = numValue
+            print("✅ Applied turbo value: " .. turboValue)
+        else
+            print("⚠️ Enter a value to apply turbo")
+        end
+    end
+})
+
+PremiumTab:Button({
+    Title = "Apply Speed",
+    Desc = "Apply speed value",
+    Callback = function()
+        newNotify("✅ Success", "Speed Applied " .. speedValue .. " in all cars")
+        applyToAllCars("MaxSpeed", speedValue)
+    end
+})
+
+PremiumTab:Button({
+    Title = "Apply Turbo",
+    Desc = "Apply turbo value",
+    Callback = function()
+        newNotify("✅ Success", "Turbo Applied " .. turboValue .. " in all cars")
+        applyToAllCars("Turbo", turboValue)
+    end
+})
+
+PremiumTab:Section({Title = "Gamepass Vehicle Spawner", Icon = "sparkles"})
+
+local function spawnVehicle(name)
+	RE["1Ca1r"]:FireServer("PickingCar", name)
+end
+
+local cars = {
+    {"CyberTruck"},
+    {"Roadster"},
+    {"Bugatti"},
+    {"SuperCar"},
+    {"Lamboego"},
+    {"CopLamborgini"},
+	{"Ferrari"},
+	{"Formula1"},
+    {"Buggy"},
+	{"GoKartVPass"},
+	{"BatMobile"},
+    {"HummerLimo"},
+    {"Hummer"},
+}
+
+for _, spawnCar in pairs(cars) do
+    PremiumTab:Button({
+        Title = spawnCar[1],
+    	Color = Color3.fromHex("#000000"),
+    	Icon = "rbxassetid://10709791437",
+        Callback = function()
+			spawnVehicle(spawnCar[1])
+        end
+    })
+end
+
+-- ==============================
+-- TELEPORTS
+-- ==============================
+
+TeleportTab:Section({Title = "Teleports", Icon = "pin"})
+
+local sites = {
+    {"Hill", CFrame.new(-348.64, 65.94, -458.08)},
+    {"Start", CFrame.new(-26.17, 3.48, -0.93)},
+    {"Hotel", CFrame.new(159.10, 3.32, 164.97)},
+    {"Beach", CFrame.new(55.69, 2.94, -1403.60)},
+    {"Beach2", CFrame.new(42.39, 2.94, 1336.14)},
+    {"Farm", CFrame.new(-766.41, 2.92, -61.10)}
+}
+
+for _, tp in pairs(sites) do
+    TeleportTab:Button({
+        Title = tp[1],
+        Callback = function()
+	    local player = game.Players.LocalPlayer
+		local character = player.Character or player.CharacterAdded:Wait()
+		local hrp = character:FindFirstChild("HumanoidRootPart")
+            hrp.CFrame = tp[2]
+        end
+    })
+end
+
+-- ==============================
+-- PROTECTION
+-- ==============================
+
+ProtectionTab:Section({Title = "Protection", Icon = "shield"})
+
+local antiSitConnection = nil
+local antiSitEnabled = false
+
+ProtectionTab:Toggle({
+	Title = "Anti Sit",
+    Desc = "TYPE: Player 👤",
+    Default = false,
+    Callback = function(state)
+        antiSitEnabled = state
+        local LocalPlayer = game:GetService("Players").LocalPlayer
+
+        if state then
+            local function applyAntiSit(character)
+                local humanoid = character:FindFirstChild("Humanoid")
+                if humanoid then
+                    humanoid.Sit = false
+                    humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
+                    if antiSitConnection then
+                        antiSitConnection:Disconnect()
+                    end
+                    antiSitConnection = humanoid.Seated:Connect(function(isSeated)
+                        if isSeated then
+                            humanoid.Sit = false
+                            humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+                        end
+                    end)
+                end
+            end
+
+            if LocalPlayer.Character then
+                applyAntiSit(LocalPlayer.Character)
+            end
+
+            local characterAddedConnection
+            characterAddedConnection = LocalPlayer.CharacterAdded:Connect(function(character)
+                if not antiSitEnabled then
+                    characterAddedConnection:Disconnect()
+                    return
+                end
+                local humanoid = character:WaitForChild("Humanoid", 5)
+                if humanoid then
+                    applyAntiSit(character)
+                end
+            end)
+        else
+            if antiSitConnection then
+                antiSitConnection:Disconnect()
+                antiSitConnection = nil
+            end
+
+            if LocalPlayer.Character then
+                local humanoid = LocalPlayer.Character:FindFirstChild("Humanoid")
+                if humanoid then
+                    humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, true)
+                end
+            end
+        end
+    end
+})
+
+-- ==============================
+-- ADMIN
+-- ==============================
+
+AdminTab:Section({Title = "Admin (Staff Only)", Icon = "crown"})
+
+AdminTab:Button({
+    Title = "View",
+    Desc = "View player",
+    Color = Color3.fromHex("#000000"),
+    Icon = "rbxassetid://10709791437",
+    Locked = true,
+})
+
+AdminTab:Button({
+    Title = "Kick",
+    Desc = "Kick selected player",
+    Color = Color3.fromHex("#000000"),
+    Icon = "rbxassetid://10709791437",
+    Locked = true,
+})
+
+AdminTab:Button({
+    Title = "Kill",
+    Desc = "Kill selected player",
+    Color = Color3.fromHex("#000000"),
+    Icon = "rbxassetid://10709791437",
+    Locked = true,
+})
+
+AdminTab:Button({
+    Title = "Fling",
+    Desc = "Fling selected player",
+    Color = Color3.fromHex("#000000"),
+    Icon = "rbxassetid://10709791437",
+    Locked = true,
+})
+
+AdminTab:Button({
+    Title = "Bring",
+    Desc = "Bring selected player",
+    Color = Color3.fromHex("#000000"),
+    Icon = "rbxassetid://10709791437",
+    Locked = true,
+})
+
+AdminTab:Button({
+    Title = "Freeze",
+    Desc = "Freeze selected player",
+    Color = Color3.fromHex("#000000"),
+    Icon = "rbxassetid://10709791437",
+    Locked = true,
+})
+
+AdminTab:Button({
+    Title = "Unfreeze",
+    Desc = "Unfreeze selected player",
+    Color = Color3.fromHex("#000000"),
+    Icon = "rbxassetid://10709791437",
+    Locked = true,
+})
+
+AdminTab:Button({
+    Title = "Jail",
+    Desc = "Jail selected player",
+    Color = Color3.fromHex("#000000"),
+    Icon = "rbxassetid://10709791437",
+    Locked = true,
+})
+
+AdminTab:Button({
+    Title = "Unjail",
+    Desc = "Unjail selected player",
+    Color = Color3.fromHex("#000000"),
+    Icon = "rbxassetid://10709791437",
+    Locked = true,
+})
