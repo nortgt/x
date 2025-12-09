@@ -1194,8 +1194,9 @@ TrollTab:Button({
 
 TrollTab:Section({Title = "Admin Commands", Icon = "ghost"})
 
-local LocalPlayer = game.Players.LocalPlayer
-local Humanoid = (LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()):WaitForChild("Humanoid")
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local Humanoid = character:FindFirstChildOfClass("Humanoid")
 
 local AnimationTrack = Instance.new("Animation")
 AnimationTrack.AnimationId = "rbxassetid://101852027997337"
