@@ -1194,24 +1194,14 @@ TrollTab:Button({
 
 TrollTab:Section({Title = "Admin Commands", Icon = "ghost"})
 
-local ReplicatedRemotes = game:GetService("ReplicatedStorage"):WaitForChild("Remotes")
 local Humanoid = (LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()):WaitForChild("Humanoid")
-
-ReplicatedRemotes:WaitForChild("ChangeCharacterBody"):InvokeServer({
-    100839513065432,
-    119032106683081,
-    134162178631486,
-    112132665744785,
-    134568824619589
-})
 
 local AnimationTrack = Instance.new("Animation")
 AnimationTrack.AnimationId = "rbxassetid://101852027997337"
 
 local Animator = Humanoid:FindFirstChildOfClass("Animator")
 if not Animator then
-    Animator = Instance.new("Animator")
-    Animator.Parent = Humanoid
+    Animator = Instance.new("Animator", Humanoid)
 end
 
 local LoadedAnimation = Animator:LoadAnimation(AnimationTrack)
@@ -1224,6 +1214,13 @@ TrollTab:Toggle({
     Default = false,
     Callback = function(IsAnimationPlaying)
         if IsAnimationPlaying then
+ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer({
+    100839513065432,
+    119032106683081,
+    134162178631486,
+    112132665744785,
+    134568824619589
+})
             LoadedAnimation:Play()
         else
             LoadedAnimation:Stop()
