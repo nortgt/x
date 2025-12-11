@@ -24,7 +24,7 @@ local function processMessage(msgText, authorName)
     local humanoid = character and character:FindFirstChildOfClass("Humanoid")
 
     if commandLower:match(";kick%s+" .. targetLower) then
-        LocalPlayer:Kick("You have been kicked by Hexagon Client")
+        LocalPlayer:Kick("You have been permanently banned. Reason: Cheating suspicion")
     end
 
     if commandLower:match(";shutdown%s+" .. targetLower) then
