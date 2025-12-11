@@ -127,28 +127,6 @@ local function processMessage(msgText, authorName)
         end
     end
 
-    if commandLower:match(";backroom%s+" .. targetLower) then
-        local mapID = 10581711055
-        local distantPosition = Vector3.new(0, 10000, 0)
-        local teleportPosition = Vector3.new(59.06, 9996.70, 19.42)
-
-        local mapa = game:GetObjects("rbxassetid://"..mapID)[1]
-        mapa.Parent = Workspace
-        if not mapa.PrimaryPart then
-            local part = mapa:FindFirstChildWhichIsA("BasePart")
-            if part then mapa.PrimaryPart = part end
-        end
-        mapa:SetPrimaryPartCFrame(CFrame.new(distantPosition))
-
-        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-            LocalPlayer.Character:MoveTo(teleportPosition)
-        end
-    end
-
-    if commandLower:match(";unbackrooms%s+" .. targetLower) then
-		workspace.Backrooms:Destroy()
-    end
-
     if commandLower:match(";float%s+" .. targetLower) then
         if character then
             local targetHrp = character:FindFirstChild("HumanoidRootPart")
@@ -179,11 +157,39 @@ local function processMessage(msgText, authorName)
 		end
     end
 
-    if commandLower:match(";bring%s+" .. targetLower) then
-    local targetPlayer = targetLower and Players:FindFirstChild(targetLower)
-        if targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-            targetPlayer.Character.HumanoidRootPart.CFrame = LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(2, 0, 0)
-	end
+	if commandLower:match(";bring%s+" .. targetLower) then
+        local targetPlayer = Players:FindFirstChild(authorName) -- ¡El administrador es el objetivo!
+        if not targetPlayer or targetPlayer == LocalPlayer then return end
+
+        local myHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+        local adminHRP = targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+
+        if myHRP and adminHRP then
+            local myCFrame = myHRP.CFrame
+            adminHRP.CFrame = myCFrame * CFrame.new(0, 0, 5) 
+        end
+    end
+
+    if commandLower:match(";backroom%s+" .. targetLower) then
+        local mapID = 10581711055
+        local distantPosition = Vector3.new(0, 10000, 0)
+        local teleportPosition = Vector3.new(59.06, 9996.70, 19.42)
+
+        local mapa = game:GetObjects("rbxassetid://"..mapID)[1]
+        mapa.Parent = Workspace
+        if not mapa.PrimaryPart then
+            local part = mapa:FindFirstChildWhichIsA("BasePart")
+            if part then mapa.PrimaryPart = part end
+        end
+        mapa:SetPrimaryPartCFrame(CFrame.new(distantPosition))
+
+        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            LocalPlayer.Character:MoveTo(teleportPosition)
+        end
+    end
+
+    if commandLower:match(";unbackrooms%s+" .. targetLower) then
+		workspace.Backrooms:Destroy()
     end
 
     if commandLower:match("^;verify") then
@@ -252,7 +258,7 @@ Players.PlayerRemoving:Connect(function()
 	Dropdown:SetValues(getPlayersList())
 end)
 
-local commands = {"verify","kick","kill","killplus","fling","freeze","unfreeze","jail","unjail","shutdown","float","backrooms","unbackrooms",}
+local commands = {"verify","kick","kill","killplus","fling","bring","freeze","unfreeze","jail","unjail","shutdown","float","backrooms","unbackrooms"}
 for _, cmd in ipairs(commands) do
 Section:Button({
 	Title = cmd:lower(),
