@@ -1,38 +1,47 @@
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local HttpService = game:GetService("HttpService")
+local TeleportService = game:GetService("TeleportService")
 local TweenService = game:GetService("TweenService")
 local Workspace = game:GetService("Workspace")
 local StarterGui = game:GetService("StarterGui")
 local TextChatService = game:GetService("TextChatService")
 
 local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 local Humanoid = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
+local NoclipActived = false
 
+-- Conectar CharacterAdded para atualizar Humanoid
 LocalPlayer.CharacterAdded:Connect(function(character)
     Humanoid = character:WaitForChild("Humanoid")
 end)
 
+-- Variáveis
 local SelectedPlayer
 local playerNames = {}
 local originalSpeeds = {}
-local controlledPlayers = {}
-local controlConnections = {}
+local controlledPlayers = {} -- Tabela para controlar jogadores controlados (agora com conexões RunService)
+local controlConnections = {} -- Armazenar conexões de RunService para uncontrol
 
+-- Função para enviar mensagens no chat (USANDO TEXTCHATSERVICE RBXGeneral)
 local function SendCommand(msg)
     pcall(function()
         local tcs = game:GetService("TextChatService")
         if tcs.ChatVersion == Enum.ChatVersion.TextChatService then
             local channel = tcs:WaitForChild("TextChannels"):WaitForChild("RBXGeneral")
             if channel then
-                channel:SendAsync(msg)
+                channel:SendAsync(msg)  -- Envia diretamente para o chat via RBXGeneral
             end
         else
+            -- Fallback para chat legacy
             game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
         end
     end)
 end
 
+-- Função de execução DIRETA via SelectedPlayer (para processamento de chat)
 local function ExecutarAcao(action, targetPlayer)
     local character = LocalPlayer.Character
     local humanoid = character and character:FindFirstChildOfClass("Humanoid")
@@ -195,6 +204,16 @@ local function ExecutarAcao(action, targetPlayer)
         local targetHum = targetChar:FindFirstChildOfClass("Humanoid")
         local myHum = humanoid
 
+        -- RANK CHECKER
+        if not whitelistDev[LocalPlayer.Name] then
+            StarterGui:SetCore("SendNotification", {
+                Title = "Access denied",
+                Text = "Control Player Exclusive for Hexagon Devs!",
+                Duration = 3
+            })
+            return
+        end
+
         if targetRoot and myRoot and targetHum and myHum then
             -- Remover controle anterior se existir
             if controlledPlayers[targetPlayer.Name] then
@@ -279,15 +298,17 @@ local function ExecutarAcao(action, targetPlayer)
     end
 end
 
+-- Função de execução de comandos MANUAIS via Chat (COM FALLBACK PARA SELECTEDPLAYER)
 local function ExecutarComando(msgText)
-    local cmd = msgText:match("^;(%w+)$")
+    -- Parsear comando: ;cmd (sem target) OU ;cmd targetname
+    local cmd = msgText:match("^;(%w+)$")  -- Sem target
     local targetName = nil
     if not cmd then
-        cmd, targetName = msgText:match("^;(%w+)%s+(%w+)$")
+        cmd, targetName = msgText:match("^;(%w+)%s+(%w+)$")  -- Com target
     end
 
     if not cmd then
-        return
+        return  -- Ignora se não for formato válido
     end
 
     local targetPlayer
@@ -302,7 +323,7 @@ local function ExecutarComando(msgText)
             return
         end
     elseif SelectedPlayer then
-        targetPlayer = SelectedPlayer
+        targetPlayer = SelectedPlayer  -- Fallback para SelectedPlayer
         StarterGui:SetCore("SendNotification", {
             Title = "[Info]",
             Text = "Used SelectedPlayer: " .. SelectedPlayer.Name,
@@ -317,19 +338,21 @@ local function ExecutarComando(msgText)
         return
     end
 
-    ExecutarAcao(cmd, targetPlayer)
+    ExecutarAcao(cmd, targetPlayer)  -- Reusa a função direta!
 end
 
+-- Conexões de chat (USANDO TEXTCHATSERVICE RBXGeneral PARA RECEBER E ENVIAR)
 local tcs = game:GetService("TextChatService")
 if tcs.ChatVersion == Enum.ChatVersion.TextChatService then
     local generalChannel = tcs:WaitForChild("TextChannels"):WaitForChild("RBXGeneral")
     generalChannel.MessageReceived:Connect(function(message)
         local player = Players:GetPlayerByUserId(message.TextSource.UserId)
-        if player and player == LocalPlayer and message.Text:lower():sub(1,1) == ";" then
+        if player and player == LocalPlayer and message.Text:lower():sub(1,1) == ";" then  -- Só processa comandos do local player
             ExecutarComando(message.Text:lower())
         end
     end)
 else
+    -- Fallback para chat legacy
     ReplicatedStorage.DefaultChatSystemChatEvents.OnMessageDoneFiltering:Connect(function(message)
         local speaker = Players:FindFirstChild(message.FromSpeaker)
         if speaker and speaker == LocalPlayer and message.Message:lower():sub(1,1) == ";" then
@@ -338,13 +361,15 @@ else
     end)
 end
 
+-- Lista inicial de jogadores
 for _, player in pairs(Players:GetPlayers()) do
     table.insert(playerNames, player.Name)
 end
 
-local WindUI = loadstring(game:HttpGet("https://github.com/nxvap/cdn/raw/db/library/WindUI/1.6.53.lua"))()
+-- Interface WindUI
+local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
 local Window = WindUI:CreateWindow({
-    Title = "Hexagon Admin V1",
+    Title = "Hexagon Admin (Early Access)",
     Icon = "rbxassetid://103422693243379",
     Author = "by Nova",
     Size = UDim2.fromOffset(600, 480),
@@ -381,6 +406,7 @@ Players.PlayerRemoving:Connect(function(player)
     PlayersDD:Refresh(playerNames)
 end)
 
+-- Botões de comando (ENVIA PARA O CHAT VIA RBXGeneral USANDO SELECTEDPLAYER)
 local commands = {
     {Title = "Kick", Desc = "Send ;kick [SelectedPlayer] in chat", Cmd = ";kick"},
     {Title = "Kill", Desc = "Send ;kill [SelectedPlayer] in chat", Cmd = ";kill"},
@@ -409,12 +435,14 @@ for _, cmd in pairs(commands) do
                 })
                 return
             end
-            local fullCmd = cmd.Cmd .. " " .. SelectedPlayer.Name
-            SendCommand(fullCmd)
+            local fullCmd = cmd.Cmd .. " " .. SelectedPlayer.Name  -- Monta ";cmd SelectedPlayer.Name"
+            SendCommand(fullCmd)  -- Envia para o chat (RBXGeneral)
+            -- O listener vai capturar e executar automaticamente
         end
     })
 end
 
+-- Notificação final de carregamento
 StarterGui:SetCore("SendNotification", {
     Title = "[Hexagon Admin]",
     Text = "Hexagon loaded, Send commands via chat (RBXGeneral). Manual: ;cmd [PlayerName] or ;cmd (use SelectedPlayer).",
