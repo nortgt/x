@@ -222,7 +222,7 @@ local Window = WindUI:CreateWindow({
 })
 
 local AdmTab = Window:Tab({Title = "Admin", Icon = "crown"})
-local Section = AdmTab:Section({Title = "Admin Commands", Icon = "user-cog"})
+local Section = AdmTab:Section({Title = "Admin Commands", Icon = "user-cog", Opened = true})
 
 Window:Tag({
     Title = "Admin",
@@ -255,17 +255,17 @@ end)
 local commands = {"verify","kick","kill","killplus","fling","freeze","unfreeze","jail","unjail","shutdown","float","backrooms","unbackrooms",}
 for _, cmd in ipairs(commands) do
 Section:Button({
-    Title = cmd:lower(),
-    Desc = "Use ;"..cmd.." - Target",
-    Callback = function()
-        if cmd == "verify" then
+	Title = cmd:lower(),
+	Desc = "Use ;"..cmd.." - Target",
+	Callback = function()
+    	if cmd == "verify" then
 			sendCommand("verify", "")
     	else
 		if TargetName and TargetName ~= "" then
 			sendCommand(cmd, TargetName)
 		else
 		warn("No player selected")
-        end
+    	end
     end
 end
 })
